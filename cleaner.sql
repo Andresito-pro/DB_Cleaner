@@ -10,7 +10,7 @@ CREATE TABLE oficina (
   codigo_postal VARCHAR(10) NOT NULL,
   telefono VARCHAR(20) NOT NULL,
   linea_direccion1 VARCHAR(50) NOT NULL,
-  linea_direccion2 VARCHAR(50) DEFAULT NULL,
+  linea_direccion2 VARCHAR(50) DEFAULT 'NO TIENE',
   PRIMARY KEY (codigo_oficina)
 );
 
@@ -38,7 +38,7 @@ CREATE TABLE gama_producto (
 );
 
 CREATE TABLE cliente (
-  codigo_cliente INTEGER NOT NULL,
+  codigo_cliente INTEGER AUTO_INCREMENT NOT NULL,
   nombre_cliente VARCHAR(50) NOT NULL,
   nombre_contacto VARCHAR(30) DEFAULT NULL,
   apellido_contacto VARCHAR(30) DEFAULT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE cliente (
   limite_credito NUMERIC(15,2) DEFAULT NULL,
   PRIMARY KEY (codigo_cliente),
   FOREIGN KEY (codigo_empleado_rep_ventas) REFERENCES empleado (codigo_empleado)
-);
+) AUTO_INCREMENT =10;
 
 CREATE TABLE pedido (
   codigo_pedido INTEGER NOT NULL,
@@ -927,6 +927,123 @@ INSERT INTO pago VALUES (28,'PayPal','ak-std-000022','2009-01-13',8489);
 INSERT INTO pago VALUES (30,'PayPal','ak-std-000024','2009-01-16',7863);
 INSERT INTO pago VALUES (35,'PayPal','ak-std-000025','2007-10-06',3321);
 INSERT INTO pago VALUES (38,'PayPal','ak-std-000026','2006-05-26',1171);
+
+
+/*SENTENCIAS DML EN SQL*/
+/*--RETO A: Retorna un listado con el código de oficina y la ciudad donde hay oficinas.*/
+show tables;
+describe oficina;
+
+select codigo_oficina, ciudad, pais, region, codigo_postal
+telefono, linea_direccion1, linea_direccion2
+from oficina;
+
+select codigo_oficina, ciudad
+from oficina;
+
+/*--RETO B: Retorna un listado con la ciudad y el teléfono de las oficinas de España.*/
+show tables;
+describe oficina;
+
+select codigo_oficina, ciudad, pais, region, codigo_postal
+telefono, linea_direccion1, linea_direccion2
+from oficina;
+
+select ciudad, telefono
+from oficina
+where pais = 'España';
+
+/*--RETO C: Retorna un listado con el nombre, apellidos y email de los empleados cuyo jefe tiene un código de jefe igual a 7.*/
+
+show tables;
+describe empleado;
+
+select apellido1, apellido2, extension, email
+codigo_oficina, codigo_jefe, puesto
+from empleado;
+
+select nombre, apellido1, apellido2, email
+from empleado
+where codigo_jefe = 7;
+
+/*--RETO D:Retorna el nombre del puesto, nombre, apellidos y email del jefe de la empresa.*/
+show tables;
+describe empleado;
+
+select apellido1, apellido2, extension, email
+codigo_oficina, codigo_jefe, puesto
+from empleado;
+
+select puesto, nombre, apellido1, apellido2, email
+from empleado
+where codigo_jefe is null;
+
+/*--RETO C:Retorna un listado con el nombre, apellidos y puesto de aquellos empleados que no sean representantes de ventas.*/
+show tables;
+describe empleado;
+
+select apellido1, apellido2, extension, email
+codigo_oficina, codigo_jefe, puesto
+from empleado;
+
+SELECT nombre, apellido1, apellido2, puesto
+FROM empleado
+WHERE puesto <> 'Representante Ventas';
+
+/*RETO E: Retorna un listado con el nombre de los todos los clientes españoles.*/
+show tables;
+describe cliente;
+
+select codigo_cliente, nombre_cliente, nombre_contacto, apellido_contacto,telefono
+fax, linea_direccion1, linea_direccion2, ciudad, region, pais, codigo_postal, codigo_empleado_rep_ventas, limite_credito
+from cliente;
+
+select nombre_cliente
+from cliente
+where  pais = 'Spain';
+
+/*RETO M: Genera un listado con todas las formas de pago que aparecen en la tabla pago. Tenga en cuenta que no deben aparecer formas de pago repetidas.*/
+show tables;
+describe pago;
+
+select codigo_cliente, forma_pago, id_transaccion
+fecha_pago, total
+from pago;
+
+/*Usa DISTINCT justo después de SELECT para eliminar filas duplicadas y obtener valores únicos, afectando a todas las columnas mencionadas en la consulta.*/
+select distinct forma_pago
+from pago;
+
+
+/*RETO N: Genera un listado con todos los productos que pertenecen a la gama Ornamentales y que tienen más de 100 unidades en stock.
+ El listado deberá estar ordenado por su precio de venta, mostrando en primer lugar los de mayor precio.*/
+show tables;
+describe producto;
+
+select codigo_producto, nombre, gama, dimensiones, proveedor, descripcion
+cantidad_en_stock, precio_venta, precio_proveedor
+from producto;
+
+select nombre, gama, precio_venta
+from producto 
+where gama = 'Ornamentales' and cantidad_en_stock > 100
+order by precio_venta desc;
+
+/*RETO O: Genera un listado con todos los clientes que sean de la ciudad de Madrid y cuyo representante de ventas tenga el código de empleado 11 o 30.*/
+show tables;
+describe cliente;
+
+
+select codigo_cliente, nombre_cliente, nombre_contacto, apellido_contacto
+telefono,fax, linea_direccion1, linea_direccion2, ciudad, region, pais
+codigo_postal, codigo_empleado_rep_ventas, limite_credito
+from cliente;
+
+select nombre_cliente, ciudad, codigo_empleado_rep_ventas
+from cliente
+where ciudad = 'Madrid' 
+  and codigo_empleado_rep_ventas IN (11, 30);
+
 
 
 
