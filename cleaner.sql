@@ -934,7 +934,7 @@ INSERT INTO pago VALUES (38,'PayPal','ak-std-000026','2006-05-26',1171);
 show tables;
 describe oficina;
 
-select codigo_oficina, ciudad, pais, region, codigo_postal
+select codigo_oficina, ciudad, pais, region, codigo_postal,
 telefono, linea_direccion1, linea_direccion2
 from oficina;
 
@@ -945,7 +945,7 @@ from oficina;
 show tables;
 describe oficina;
 
-select codigo_oficina, ciudad, pais, region, codigo_postal
+select codigo_oficina, ciudad, pais, region, codigo_postal,
 telefono, linea_direccion1, linea_direccion2
 from oficina;
 
@@ -958,7 +958,7 @@ where pais = 'España';
 show tables;
 describe empleado;
 
-select apellido1, apellido2, extension, email
+select apellido1, apellido2, extension, email,
 codigo_oficina, codigo_jefe, puesto
 from empleado;
 
@@ -970,7 +970,7 @@ where codigo_jefe = 7;
 show tables;
 describe empleado;
 
-select apellido1, apellido2, extension, email
+select apellido1, apellido2, extension, email,
 codigo_oficina, codigo_jefe, puesto
 from empleado;
 
@@ -982,7 +982,7 @@ where codigo_jefe is null;
 show tables;
 describe empleado;
 
-select apellido1, apellido2, extension, email
+select apellido1, apellido2, extension, email,
 codigo_oficina, codigo_jefe, puesto
 from empleado;
 
@@ -994,7 +994,7 @@ WHERE puesto <> 'Representante Ventas';
 show tables;
 describe cliente;
 
-select codigo_cliente, nombre_cliente, nombre_contacto, apellido_contacto,telefono
+select codigo_cliente, nombre_cliente, nombre_contacto, apellido_contacto,telefono,
 fax, linea_direccion1, linea_direccion2, ciudad, region, pais, codigo_postal, codigo_empleado_rep_ventas, limite_credito
 from cliente;
 
@@ -1023,12 +1023,11 @@ select * from pago;
   
 /*RETO H. Genera un listado con el código de pedido, código de cliente, fecha esperada y fecha de entrega de los pedidos que no han sido entregados a tiempo.*/
 
-  select * from pedido;
-  show tables;
-  describe pedido;
-  select codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega
-  from pedido
-  where fecha_entrega > fecha_esperada; /* SE USA EL > PARA BUSCAR EN EL MYSQL SI LA FECHA DE ENTREGA SE PASO DE LA FECHA ESPERADA*/
+SELECT codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega
+FROM pedido
+WHERE fecha_entrega IS NOT NULL 
+AND fecha_entrega > fecha_esperada 
+AND estado = 'Entregado';
   
 
 /*RETO I: Genera un listado con el código de pedido, código de cliente, fecha esperada y fecha de entrega de los pedidos cuya fecha de entrega ha sido al menos dos días antes de la fecha esperada.
@@ -1036,12 +1035,12 @@ Utilizando la función ADDDATE de MySQL.
 Utilizando la función DATEDIFF de MySQL.
 ¿Sería posible resolver esta consulta utilizando el operador de suma + o resta -? */
  
-   select * from pedido;
-  show tables;
-  describe pedido;
-  select codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega
-  from pedido
-  where (fecha_esperada - fecha_entrega) >= 2; /* LO HICE SIN FUNCION ME PARECE MAS FACIL ASI AUNQUE PREFERIBLEMENTE CREO QUE ES MEJOR USAR LA FUNCION*/
+select * from pedido;
+show tables;
+describe pedido;
+select codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega
+from pedido
+where (fecha_esperada - fecha_entrega) >= 2; 
   
 /*RETO J: Genera un listado de todos los pedidos que fueron rechazados en 2009.*/
 
@@ -1060,7 +1059,7 @@ describe pedido;
 select codigo_pedido, codigo_cliente, fecha_pedido, fecha_entrega, estado
 from pedido
 where estado = 'Entregado' 
-  and month(fecha_entrega) = 1;
+and month(fecha_entrega) = 1;
 
 /*RETO L: Genera un listado con todos los pagos que se realizaron en el año 2008 mediante Paypal. Ordene el resultado de mayor a menor.*/
 select * from pago;
@@ -1070,15 +1069,14 @@ describe pago;
 select codigo_cliente, forma_pago, id_transaccion, fecha_pago, total
 from pago
 where forma_pago = 'PayPal' 
-  and year(fecha_pago) = 2008
+and year(fecha_pago) = 2008
 order by total desc;
 
 /*RETO M: Genera un listado con todas las formas de pago que aparecen en la tabla pago. Tenga en cuenta que no deben aparecer formas de pago repetidas.*/
 show tables;
 describe pago;
 
-select codigo_cliente, forma_pago, id_transaccion
-fecha_pago, total
+select distinct forma_pago
 from pago;
 
 /*Usa DISTINCT justo después de SELECT para eliminar filas duplicadas y obtener valores únicos, afectando a todas las columnas mencionadas en la consulta.*/
@@ -1091,50 +1089,26 @@ from pago;
 show tables;
 describe producto;
 
-select codigo_producto, nombre, gama, dimensiones, proveedor, descripcion
+select codigo_producto, nombre, gama, dimensiones, proveedor, descripcion,
 cantidad_en_stock, precio_venta, precio_proveedor
 from producto;
 
 select nombre, gama, precio_venta
 from producto 
-where gama = 'Ornamentales' and cantidad_en_stock > 100
+where gama = 'Ornamentales' and cantidad_en_stock >= 100
 order by precio_venta desc;
 
 /*RETO O: Genera un listado con todos los clientes que sean de la ciudad de Madrid y cuyo representante de ventas tenga el código de empleado 11 o 30.*/
 show tables;
 describe cliente;
+describe empleado;
 
-
-select codigo_cliente, nombre_cliente, nombre_contacto, apellido_contacto
-telefono,fax, linea_direccion1, linea_direccion2, ciudad, region, pais
+select codigo_cliente, nombre_cliente, nombre_contacto, apellido_contacto,
+telefono,fax, linea_direccion1, linea_direccion2, ciudad, region, pais,
 codigo_postal, codigo_empleado_rep_ventas, limite_credito
 from cliente;
 
 select nombre_cliente, ciudad, codigo_empleado_rep_ventas
 from cliente
 where ciudad = 'Madrid' 
-  and codigo_empleado_rep_ventas IN (11, 30);
-
-
-
-/* SENTENCIAS DML PARA PRÁCTICAR SIN MORIR EN EL INTENTO */
-/* EJEMPLO PARA CONOCER LAS COLUMNAS DE UNA TABLA*/
-DESCRIBE EMPLEADO;
-
-SELECT codigo_empleado, nombre, apellido1, apellido2,
-extension, email, codigo_oficina, codigo_jefe
-puesto FROM EMPLEADO;
-
- select em.codigo_empleado, count(*) total_registros /*cl.ciudad, em.codigo_empleado */
- from cliente cl,  empleado em 
- where em.codigo_empleado = cl.codigo_empleado_rep_ventas
- and upper(cl.ciudad) = 'MADRID'
- and em.codigo_empleado in (11,30)
- group by em.codigo_empleado; 
-
- select cl.ciudad, count(*) total_registros /*cl.ciudad, em.codigo_empleado */
- from cliente cl,  empleado em 
- where em.codigo_empleado = cl.codigo_empleado_rep_ventas
- and em.codigo_empleado in (11,30)
- group by cl.ciudad
- order by cl.ciudad desc; 
+and codigo_empleado_rep_ventas IN (11, 30);
