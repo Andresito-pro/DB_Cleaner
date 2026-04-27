@@ -1019,7 +1019,7 @@ select * from pago;
   describe pago;
   select distinct codigo_cliente /*eliminar datos duplicados de 2008*/
   from pago
-  where year (fecha_pago) = 2008; /*EXTRAE LOS DATOS SOLO DEL 2008, PREFERI USAR ESTA FUNCION POR QUE LA ENTENDI MEJOR*/
+  where year (fecha_pago) = 2008; /*EXTRAE LOS DATOS SOLO DEL 2008*/
   
 /*RETO H. Genera un listado con el código de pedido, código de cliente, fecha esperada y fecha de entrega de los pedidos que no han sido entregados a tiempo.*/
 
