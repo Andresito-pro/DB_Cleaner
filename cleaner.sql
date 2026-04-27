@@ -1026,21 +1026,32 @@ select * from pago;
 SELECT codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega
 FROM pedido
 WHERE fecha_entrega IS NOT NULL 
-AND fecha_entrega > fecha_esperada 
-AND estado = 'Entregado';
+AND fecha_entrega > fecha_esperada;
   
 
 /*RETO I: Genera un listado con el código de pedido, código de cliente, fecha esperada y fecha de entrega de los pedidos cuya fecha de entrega ha sido al menos dos días antes de la fecha esperada.
 Utilizando la función ADDDATE de MySQL.
 Utilizando la función DATEDIFF de MySQL.
 ¿Sería posible resolver esta consulta utilizando el operador de suma + o resta -? */
- 
-select * from pedido;
-show tables;
+  show tables;
+describe Pedido;
+
 describe pedido;
 select codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega
 from pedido
-where (fecha_esperada - fecha_entrega) >= 2; 
+where (fecha_entrega - fecha_esperada) >= 2; 
+
+SELECT codigo_pedido, fecha_pedido, fecha_esperada, fecha_entrega, estado, comentarios, codigo_cliente 
+FROM pedido;
+SELECT COUNT(*)
+FROM pedido
+WHERE fecha_entrega > fecha_esperada
+OR (fecha_entrega IS NULL AND estado NOT IN ('Rechazado', 'Pendiente'));
+
+SELECT COUNT(*) 
+FROM pedido
+WHERE fecha_entrega > fecha_esperada
+OR (fecha_entrega IS NULL AND estado = 'Entregado');
   
 /*RETO J: Genera un listado de todos los pedidos que fueron rechazados en 2009.*/
 
